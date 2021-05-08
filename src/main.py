@@ -1,35 +1,39 @@
-import pygame, sys
+import sys
+
+import pygame
 from pygame.locals import *
-import random, time
 
 pygame.init()
 
 FPS = 60
 FramePerSec = pygame.time.Clock()
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 608
+SCREEN_HEIGHT = 576
 
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 DISPLAYSURF.fill("white")
 pygame.display.set_caption("Tetris")
 
+# 1 Block = 8 * 8 In-Game Pixel
+# 1 In-Game Pixel = 32 * 32 Real Pixel -> 4 Real pixel per block
+# According to example image, Game will have (10 + 2 + 7) * 18 Blocks (608 * 576 Real Pixel)
 
-class Square(pygame.sprite.Sprite):
-      def __init__(self):
+
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, x_axis):
         super().__init__()
+        self.image = pygame.image.load("img/wall.png")
+        self.surf = pygame.Surface((32, 576))
+        self.rect = self.surf.get_rect(center = (x_axis, 288))
 
 
-class GameBlock(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.list_of_blocks = [Square(1), Square(2), Square(3), Square(4)]
-
-
-class LineBlock(GameBlock):
-    def __init__(self):
-        super().__init__()
-        self.arranged_squares = ArrangedSquares(self.list_of_blocks, "LineBlock")
+# Initial setup
+DISPLAYSURF.fill("white")
+left_wall = Wall(16)
+right_wall = Wall(400)
+DISPLAYSURF.blit(left_wall.image, left_wall.rect)
+DISPLAYSURF.blit(right_wall.image, right_wall.rect)
 
 
 while True:
@@ -37,8 +41,6 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-
-    DISPLAYSURF.fill("white")
 
     pygame.display.update()
     FramePerSec.tick(FPS)
